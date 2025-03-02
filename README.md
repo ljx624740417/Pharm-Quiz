@@ -1,2 +1,233 @@
-# Pharm-Quiz
-PR3154
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR3154 IC 1-9 题库</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        h1 {
+            color: #8b0000; /* 深红色 */
+            text-align: center;
+        }
+        #stats {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        #question-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        #question {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #answer {
+            font-size: 1em;
+            color: #006400; /* 深绿色 */
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #8b0000; /* 深红色 */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        }
+        button:hover {
+            background-color: #6b0000; /* 更深的红色 */
+        }
+    </style>
+</head>
+<body>
+    <h1>PR3154 IC 1-9 题库</h1>
+    <div id="stats">总题数: <span id="total-questions">0</span> | 剩余题数: <span id="remaining-questions">0</span></div>
+    <div id="question-container">
+        <div id="question"></div>
+        <div id="answer"></div>
+    </div>
+    <button id="next-question">下一题</button>
+
+    <script>
+        // 题库数据
+        const questions = [
+            { question: "Q. What is the sequence of factor activation in intrinsic coagulation?", answer: "Answer: 12, 11, 9 , (8+4), 10 , 2 ,1" },
+            { question: "Q. What is the sequence of factor activation in extrinsic coagulation?", answer: "Answer: 3 , 7, 10 , 2 ,1" },
+            { question: "Q. Which parameter measures intrinsic coagulation?", answer: "Answer: aPTT / PTT" },
+            { question: "Q. Which parameter measures intrinsic coagulation? (PTT or PT?)", answer: "Answer: PTT (Partial Thromboplastin Time)" },
+            { question: "Q. Which parameter measures intrinsic coagulation? (PTT or PT?)", answer: "Answer: PT (Prothrombin time)" },
+            { question: "Q. What are the 3 key functions of blood? (TRP)", answer: "Answer: Transportation （gas, hormone, nutrient, waste), Regulation (Body temperature, pH) , Protection (Immune response, Clottting)" },
+            { question: "Q. Describe how platelet work (plasma proteins involved, site of binding)", answer: "Answer: 1. vWF bind to the exposed collagen, and bind to the GPib receptor on platelet, causing a conformational change and activated. 2. Activated Plt release more plt factors (TxA1, ADP) 3. This leads to more aggregation of plt and form a plt clot." },
+            { question: "Q. What are the elements in blood?", answer: "Answer: They are the cells in the blood (RBC, WBC, PLT）" },
+            { question: "Q. Describe the 4 key steps in Hemostasis", answer: "Answer: Vasoconstriction, Platelet plug formation, Fibrin clot formation , Fibrinolysis" },
+            { question: "Q. What are the common targets of anteplets and their common agents?", answer: "Answer: COX-1 ( Aspirin), P2Y12 inhibitor (Clopidogrel, Ticagrelor), PAR-1 , PDE3" },
+            { question: "Q. What triggers intrinsic and extrinsic coagulation?", answer: "Answer: For intrinsic coagulation: Exposure to collagen surface or foreign body. For extrinsic coagulation: the thromboplastin III released by damaged tissue." },
+            { question: "Q. How does fibrinolysis take place?", answer: "Answer: Tissues & endothelial cells release TPA which activates plasminogen and convert it to plasmin (protease). Plasmin resolves the clot and D-dimer is released as a by product. Macrophage removes the resolved clots." },
+            { question: "Q. What is Polycythemia?", answer: "Answer: Increase in RBC number" },
+            { question: "Q. What is the normal range for Hematocrit for male and female?", answer: "Answer: Male (~46: 40-54), Female (~42: 37-47)" },
+            { question: "Q. Which blood element exist as the highest percentage? (WBC, RBC or Plt)", answer: "Answer: WBC (99%)" },
+            { question: "Q. What is reticulocyte? And what does it mean when it increases?", answer: "Answer: Immature RBC. It increases likely when there is an anemia." },
+            { question: "Q. Describe the destruction of RBC in our body. (Haem)", answer: "Answer: Phagocytosis @ spleen, liver ,bone marrow. Hb is broken down into haem and globin. Haem broken down into bilirubin and iron. Iron is recycled while bilirubin is excreted in bile. Globin is broken down into amino acid for recycling purposes." },
+            { question: "Q. How long does it take for maturation of RBC to complete?", answer: "Answer: ~7 days. (will then be released into circulation)" },
+            { question: "Q. Which factors do INR measure?", answer: "Answer: 2,7,10 & 8 ,(Warfarin : 2,7,9,10. Warfarin 不爱酒9)" },
+            { question: "Q. Which organ produces 90% of the erythropoietin？ (Liver or kidney)", answer: "Answer: Kidney" },
+            { question: "Q. Where does erythropoiesis take place?", answer: "Answer: Bone marrow" },
+            { question: "Q. What is agranulocytosis?", answer: "Answer: Leukopenia (Decrease in WBC)" },
+            { question: "Q. What are the factors stimulating erythropoiesis?", answer: "Answer: Increased oxygen demand, Hypoxia, Loss of blood" },
+            { question: "Q. Where is platelet produced from?", answer: "Answer: It is from megakaryocytes." },
+            { question: "Q. Describe the key cellular structure of platelt. (Organelles, enzymes)", answer: "Answer: No nucleus, has mitochondria, COX I and growth factors." },
+            // 新增题目
+            { question: "Q. What are the main components of blood, and what are their respective percentages?", answer: "Answer: Blood consists of plasma (55%), red blood cells (RBCs, 45%), white blood cells (WBCs, <1%), and platelets (<1%)." },
+            { question: "Q. Describe the functions of blood in the body.", answer: "Answer: Blood functions include transportation (oxygen, nutrients, waste, hormones), regulation (body temperature, pH, ion composition), and protection (clotting, immune response)." },
+            { question: "Q. What is the role of albumin in blood plasma?", answer: "Answer: Albumin maintains osmotic pressure and transports lipid-soluble substances." },
+            { question: "Q. Explain the structure and function of hemoglobin in red blood cells.", answer: "Answer: Hemoglobin consists of four polypeptide chains (2 alpha, 2 beta) and four heme groups, each containing iron that binds oxygen. It transports oxygen and carbon dioxide." },
+            { question: "Q. What is the significance of the biconcave shape of red blood cells?", answer: "Answer: The biconcave shape increases surface area for gas exchange, allows flexibility to pass through narrow capillaries, and facilitates oxygen diffusion." },
+            { question: "Q. How do platelets contribute to blood clotting?", answer: "Answer: Platelets form a plug at the site of injury, release clotting factors, and promote fibrin formation to stabilize the clot." },
+            { question: "Q. What is erythropoiesis, and where does it occur in the body at different stages of life?", answer: "Answer: Erythropoiesis is the production of red blood cells. In the fetus, it occurs in the yolk sac, liver, and spleen. In adults, it occurs in the bone marrow of ribs, sternum, and vertebrae." },
+            { question: "Q. How is erythropoiesis regulated, and what role does erythropoietin play?", answer: "Answer: Erythropoiesis is regulated by erythropoietin (EPO), a hormone produced by the kidneys. EPO stimulates hematopoietic stem cells to form red blood cells." },
+            { question: "Q. What are the key stages in the development of red blood cells from hematopoietic stem cells?", answer: "Answer: Hematopoietic stem cells → proerythroblasts → erythroblasts → normoblasts → reticulocytes → mature erythrocytes." },
+            { question: "Q. How are old red blood cells destroyed, and what happens to their components?", answer: "Answer: Old RBCs are phagocytized by macrophages in the spleen. Iron is recycled, heme is converted to bilirubin, and globin is broken down into amino acids." },
+            { question: "Q. What does a complete blood count (CBC) measure, and what are the normal ranges for RBC, WBC, and platelets?", answer: "Answer: CBC measures RBCs (men: 4-5.9x10^12/L, women: 3.8-5.2x10^12/L), WBCs (4-11x10^9/L), and platelets (150-400x10^9/L)." },
+            { question: "Q. What does an elevated reticulocyte count indicate?", answer: "Answer: An elevated reticulocyte count indicates increased red blood cell production, often due to anemia or blood loss." },
+            { question: "Q. How is mean corpuscular volume (MCV) used to classify anemia?", answer: "Answer: MCV classifies anemia as microcytic (low MCV), normocytic (normal MCV), or macrocytic (high MCV)." },
+            { question: "Q. What is the significance of red cell distribution width (RDW) in diagnosing anemia?", answer: "Answer: RDW measures variation in red blood cell size. High RDW indicates anisocytosis, often seen in iron deficiency anemia." },
+            { question: "Q. What are the potential causes of leukopenia and leukocytosis?", answer: "Answer: Leukopenia (low WBCs) can be caused by radiation, chemotherapy, or viral infections. Leukocytosis (high WBCs) can result from infections, inflammation, or leukemia." },
+            { question: "Q. Describe the three phases of hemostasis.", answer: "Answer: Vasoconstriction, platelet plug formation, and fibrin clot formation." },
+            { question: "Q. What is the role of von Willebrand factor (vWF) in platelet adhesion?", answer: "Answer: vWF binds to collagen and platelets, mediating platelet adhesion to the damaged vessel wall." },
+            { question: "Q. Explain the intrinsic and extrinsic pathways of blood clotting.", answer: "Answer: The intrinsic pathway is activated by contact with collagen, while the extrinsic pathway is triggered by tissue factor. Both pathways converge to activate Factor X." },
+            { question: "Q. How does fibrinogen contribute to clot formation?", answer: "Answer: Fibrinogen is converted to fibrin by thrombin, forming a mesh that stabilizes the platelet plug." },
+            { question: "Q. What is fibrinolysis, and how is it regulated?", answer: "Answer: Fibrinolysis is the breakdown of clots by plasmin. It is regulated by tissue plasminogen activator (tPA) and inhibitors like PAI-1." },
+            { question: "Q. What are the main types of hemophilia, and which clotting factors are deficient in each?", answer: "Answer: Hemophilia A (Factor VIII deficiency), Hemophilia B (Factor IX deficiency), and Hemophilia C (Factor XI deficiency)." },
+            { question: "Q. How does liver disease affect blood clotting?", answer: "Answer: Liver disease impairs the synthesis of clotting factors and bile production, leading to bleeding disorders." },
+            { question: "Q. What is thrombocytopenia, and what are its potential causes?", answer: "Answer: Thrombocytopenia is a low platelet count (<150x10^9/L). Causes include bone marrow damage, chemotherapy, and malaria." },
+            { question: "Q. Explain the concept of Virchow’s triad in the context of venous thromboembolism (VTE).", answer: "Answer: Virchow’s triad includes stasis of blood, hypercoagulability, and endothelial injury, which contribute to VTE." },
+            { question: "Q. What are the risk factors for deep vein thrombosis (DVT)?", answer: "Answer: Immobility, surgery, pregnancy, cancer, and genetic clotting disorders." },
+            { question: "Q. What are the common symptoms of anemia, and how does it affect blood viscosity?", answer: "Answer: Symptoms include fatigue, pallor, and shortness of breath. Anemia reduces blood viscosity, leading to faster blood flow and reduced oxygen delivery." },
+            { question: "Q. Differentiate between nutritional anemia, aplastic anemia, and sickle cell anemia.", answer: "Answer: Nutritional anemia is due to deficiencies (iron, B12, folate), aplastic anemia is bone marrow failure, and sickle cell anemia is a genetic disorder causing abnormal hemoglobin." },
+            { question: "Q. What is the role of iron, vitamin B12, and folic acid in erythropoiesis?", answer: "Answer: Iron is essential for hemoglobin synthesis, B12 and folate are required for DNA synthesis in red blood cell production." },
+            { question: "Q. How is iron deficiency anemia diagnosed and treated?", answer: "Answer: Diagnosed by low serum ferritin and treated with iron supplements (oral or IV)." },
+            { question: "Q. What is polycythemia, and how does it differ from anemia?", answer: "Answer: Polycythemia is an excess of red blood cells, increasing blood viscosity, while anemia is a deficiency of red blood cells." },
+            { question: "Q. Compare and contrast the mechanisms of action of warfarin and direct oral anticoagulants (DOACs).", answer: "Answer: Warfarin inhibits vitamin K-dependent clotting factors, while DOACs directly inhibit Factor Xa (e.g., rivaroxaban) or thrombin (e.g., dabigatran)." },
+            { question: "Q. What are the advantages of low molecular weight heparin (LMWH) over unfractionated heparin (UFH)?", answer: "Answer: LMWH has a longer half-life, predictable dosing, and lower risk of heparin-induced thrombocytopenia (HIT)." },
+            { question: "Q. How is warfarin therapy monitored, and what is the target INR range?", answer: "Answer: Warfarin is monitored using INR (International Normalized Ratio). The target INR is 2-3 for most conditions." },
+            { question: "Q. What are the indications for using thrombolytics like alteplase and tenecteplase?", answer: "Answer: Thrombolytics are used for acute myocardial infarction (AMI), ischemic stroke, and pulmonary embolism (PE)." },
+            { question: "Q. How do DOACs like rivaroxaban and apixaban differ in their pharmacokinetics and dosing?", answer: "Answer: Rivaroxaban is taken once daily, while apixaban is taken twice daily. Rivaroxaban has higher renal clearance, while apixaban is metabolized by the liver." },
+            { question: "Q. What is the mechanism of action of aspirin as an antiplatelet agent?", answer: "Answer: Aspirin irreversibly inhibits cyclooxygenase-1 (COX-1), reducing thromboxane A2 production and platelet aggregation." },
+            { question: "Q. Compare and contrast the effects of clopidogrel and ticagrelor on platelet function.", answer: "Answer: Clopidogrel irreversibly inhibits P2Y12 receptors, while ticagrelor reversibly inhibits P2Y12 with faster onset and offset." },
+            { question: "Q. What is dual antiplatelet therapy (DAPT), and when is it used?", answer: "Answer: DAPT combines aspirin and a P2Y12 inhibitor (e.g., clopidogrel) and is used after acute coronary syndrome (ACS) or stent placement." },
+            { question: "Q. How does CYP2C19 polymorphism affect the efficacy of clopidogrel?", answer: "Answer: CYP2C19 polymorphisms can reduce clopidogrel metabolism, leading to reduced antiplatelet effect." },
+            { question: "Q. What are the potential adverse effects of antiplatelet therapy?", answer: "Answer: Bleeding, gastrointestinal ulcers, and rare cases of thrombotic thrombocytopenic purpura (TTP)." },
+            { question: "Q. What are the risk factors for venous thromboembolism (VTE)?", answer: "Answer: Immobility, surgery, cancer, pregnancy, and genetic clotting disorders." },
+            { question: "Q. Describe the process of thrombus formation and embolism.", answer: "Answer: Thrombus forms due to stasis, hypercoagulability, or endothelial injury. An embolism occurs when the thrombus breaks off and travels to the lungs (PE) or other organs." },
+            { question: "Q. How is deep vein thrombosis (DVT) diagnosed using the Wells score and D-dimer test?", answer: "Answer: The Wells score assesses clinical probability, and D-dimer is a sensitive but nonspecific marker for DVT." },
+            { question: "Q. What are the treatment options for pulmonary embolism (PE)?", answer: "Answer: Anticoagulants (e.g., heparin, DOACs), thrombolytics (e.g., alteplase), and surgical embolectomy for severe cases." },
+            { question: "Q. When should VTE prophylaxis be considered, and what agents are used?", answer: "Answer: VTE prophylaxis is considered in high-risk patients (e.g., post-surgery, immobility). Agents include LMWH, fondaparinux, and DOACs." },
+            { question: "Q. What is the CHA2DS2-VASc score, and how is it used to assess stroke risk in atrial fibrillation (AF)?", answer: "Answer: The CHA2DS2-VASc score assesses stroke risk in AF based on factors like age, heart failure, and prior stroke. A score ≥2 indicates high risk." },
+            { question: "Q. What are the indications for starting oral anticoagulants (OACs) in AF?", answer: "Answer: OACs are indicated for AF patients with a CHA2DS2-VASc score ≥2 or other risk factors (e.g., mitral stenosis)." },
+            { question: "Q. Compare and contrast the use of DOACs and warfarin in stroke prevention for AF.", answer: "Answer: DOACs have fewer drug interactions, no need for INR monitoring, and lower risk of intracranial hemorrhage compared to warfarin." },
+            { question: "Q. What is the HAS-BLED score, and how is it used to assess bleeding risk in AF patients?", answer: "Answer: The HAS-BLED score assesses bleeding risk based on factors like hypertension, abnormal liver function, and prior bleeding." },
+            { question: "Q. How does renal impairment affect the dosing of DOACs in AF patients?", answer: "Answer: Renal impairment reduces DOAC clearance, requiring dose adjustments (e.g., apixaban 2.5 mg twice daily for severe renal impairment)." },
+            { question: "Q. What are the key differences between STEMI, NSTEMI, and unstable angina?", answer: "Answer: STEMI involves complete coronary artery occlusion, NSTEMI involves partial occlusion, and unstable angina involves ischemia without necrosis." },
+            { question: "Q. What is the role of antiplatelet therapy in the management of ACS?", answer: "Answer: Antiplatelet therapy (e.g., aspirin, P2Y12 inhibitors) prevents further clot formation and reduces ischemic events." },
+            { question: "Q. How is dual antiplatelet therapy (DAPT) duration determined in ACS patients?", answer: "Answer: DAPT duration is typically 12 months but may be shorter in high bleeding risk (HBR) patients or longer in high ischemic risk (HIR) patients." },
+            { question: "Q. What are the potential complications of stent placement in ACS patients?", answer: "Answer: In-stent thrombosis and restenosis." },
+            { question: "Q. How does the PRECISE-DAPT score guide antiplatelet therapy in ACS?", answer: "Answer: The PRECISE-DAPT score assesses bleeding risk and helps determine DAPT duration." },
+            { question: "Q. What are the TOAST criteria, and how are they used to classify stroke etiology?", answer: "Answer: The TOAST criteria classify stroke into subtypes like large-artery atherosclerosis, cardioembolism, and small-vessel occlusion." },
+            { question: "Q. What is the role of thrombolytics like alteplase in acute ischemic stroke (AIS)?", answer: "Answer: Thrombolytics dissolve clots and restore blood flow, improving outcomes if administered within 4.5 hours of symptom onset." },
+            { question: "Q. How is the ABCD2 score used to assess the risk of stroke following a TIA?", answer: "Answer: The ABCD2 score predicts stroke risk based on age, blood pressure, clinical features, duration of symptoms, and diabetes." },
+            { question: "Q. What are the key considerations in managing blood pressure and cholesterol in stroke patients?", answer: "Answer: Blood pressure should be controlled to <130/80 mmHg, and LDL cholesterol should be <1.8 mmol/L." },
+            { question: "Q. How does atrial fibrillation (AF) contribute to stroke risk, and how is it managed?", answer: "Answer: AF increases stroke risk due to clot formation in the left atrium. It is managed with anticoagulants (e.g., DOACs, warfarin)." },
+            { question: "Q. What are the common drug-induced hematologic disorders, and how are they diagnosed?", answer: "Answer: Common disorders include aplastic anemia, agranulocytosis, and thrombocytopenia. Diagnosis involves blood tests and drug history." },
+            { question: "Q. How does chloramphenicol cause aplastic anemia, and what are the treatment options?", answer: "Answer: Chloramphenicol suppresses bone marrow function. Treatment includes discontinuing the drug and supportive care (e.g., transfusions)." },
+            { question: "Q. What is heparin-induced thrombocytopenia (HIT), and how is it diagnosed using the 4T score?", answer: "Answer: HIT is an immune reaction to heparin. The 4T score assesses thrombocytopenia, timing, thrombosis, and other causes." },
+            { question: "Q. What are the potential causes of drug-induced neutropenia, and how is it managed?", answer: "Answer: Causes include antibiotics (e.g., penicillin), antithyroid drugs, and antipsychotics. Management involves discontinuing the drug and using granulocyte colony-stimulating factor (G-CSF)." },
+            { question: "Q. How does G6PD deficiency lead to hemolytic anemia, and what drugs should be avoided in these patients?", answer: "Answer: G6PD deficiency impairs red blood cell antioxidant defenses. Drugs to avoid include sulfonamides, antimalarials, and aspirin." },
+            { question: "Q. What is the significance of bioisosterism in drug design?", answer: "Answer: Bioisosterism replaces functional groups with similar properties to improve drug efficacy, selectivity, or pharmacokinetics." },
+            { question: "Q. How does rigidification of a drug molecule affect its binding to the target site?", answer: "Answer: Rigidification reduces conformational flexibility, enhancing binding affinity and selectivity." },
+            { question: "Q. What are peptidomimetics, and how do they differ from peptides?", answer: "Answer: Peptidomimetics mimic peptides but have improved stability and bioavailability." },
+            { question: "Q. How does chain branching affect the physicochemical properties of a drug?", answer: "Answer: Chain branching increases lipophilicity and can enhance binding to hydrophobic pockets." },
+            { question: "Q. What is the role of stereoisomers in drug activity, and how can they be optimized?", answer: "Answer: Stereoisomers can have different biological activities. Optimization involves selecting the active enantiomer." },
+            { question: "Q. What are the key components of Good Manufacturing Practice (GMP)?", answer: "Answer: GMP includes quality assurance, quality control, facility design, and documentation." },
+            { question: "Q. How do quality assurance (QA) and quality control (QC) differ in pharmaceutical manufacturing?", answer: "Answer: QA ensures processes are followed, while QC tests products for compliance." },
+            { question: "Q. What are the essential elements of GMP in facility design?", answer: "Answer: Proper air quality, temperature control, and material flow." },
+            { question: "Q. How are impurities controlled in pharmaceutical manufacturing?", answer: "Answer: Impurities are controlled through limit tests and validated analytical methods." },
+            { question: "Q. What are the main sources of impurities in drug production?", answer: "Answer: Raw materials, manufacturing processes, and storage conditions." },
+            { question: "Q. How is the identity of a drug determined using TLC and IR spectroscopy?", answer: "Answer: TLC compares Rf values, and IR spectroscopy matches absorption spectra." },
+            { question: "Q. What is the principle behind titrimetric analysis, and how is it used in drug assays?", answer: "Answer: Titrimetric analysis measures the volume of a reagent needed to react with an analyte." },
+            { question: "Q. How is HPLC used in the quantitative analysis of drugs?", answer: "Answer: HPLC separates and quantifies drug components based on retention time and peak area." },
+            { question: "Q. What are the advantages and limitations of using HPLC for drug analysis?", answer: "Answer: Advantages include high sensitivity and accuracy. Limitations include cost and complexity." },
+            { question: "Q. How does the Health Products Act ensure the quality of medicinal products in your country?", answer: "Answer: It regulates manufacturing, importation, and sale of medicinal products." },
+            { question: "Q. What is the role of vitamin K in blood clotting, and how does warfarin inhibit it?", answer: "Answer: Vitamin K is a cofactor for clotting factor synthesis. Warfarin inhibits vitamin K epoxide reductase." },
+            { question: "Q. How does the liver contribute to the synthesis of clotting factors?", answer: "Answer: The liver synthesizes most clotting factors and regulates their activation." },
+            { question: "Q. What are the key differences between arterial and venous thrombosis?", answer: "Answer: Arterial thrombosis is platelet-rich and caused by atherosclerosis, while venous thrombosis is fibrin-rich and caused by stasis." },
+            { question: "Q. How does the body regulate the balance between procoagulants and anticoagulants?", answer: "Answer: The balance is regulated by factors like antithrombin III, protein C, and tissue factor pathway inhibitor." },
+            { question: "Q. What are the key counseling points for patients starting warfarin therapy?", answer: "Answer: Monitor INR, avoid vitamin K-rich foods, and report signs of bleeding." }
+        ];
+
+        let usedQuestions = [];
+        let currentQuestion = null;
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById("total-questions").textContent = questions.length;
+            document.getElementById("remaining-questions").textContent = questions.length - usedQuestions.length;
+        }
+
+        // 获取随机问题
+        function getRandomQuestion() {
+            if (usedQuestions.length === questions.length) {
+                alert("所有题目已显示完毕！");
+                return null;
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * questions.length);
+            } while (usedQuestions.includes(randomIndex));
+
+            usedQuestions.push(randomIndex);
+            return questions[randomIndex];
+        }
+
+        // 显示问题或答案
+        function displayQuestion() {
+            const questionElement = document.getElementById("question");
+            const answerElement = document.getElementById("answer");
+
+            if (currentQuestion) {
+                answerElement.textContent = currentQuestion.answer;
+                currentQuestion = null;
+            } else {
+                const nextQuestion = getRandomQuestion();
+                if (nextQuestion) {
+                    questionElement.textContent = nextQuestion.question;
+                    answerElement.textContent = "";
+                    currentQuestion = nextQuestion;
+                }
+            }
+
+            // 更新统计信息
+            updateStats();
+        }
+
+        // 初始化
+        updateStats();
+        document.getElementById("next-question").addEventListener("click", displayQuestion);
+    </script>
+</body>
+</html>
